@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<launch>
+    <!-- Include gazebo simulation -->
+    <include file="$(find-pkg-share vikings_bot_gazebo)/launch/start_world.launch.py"/>
+
+</launch>

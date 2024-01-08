@@ -4,6 +4,12 @@
 
     <!-- Launch gazebo world seperately -->
 
+    <!-- Launch point cloud processor -->
+    <include file="$(find-pkg-share point_cloud_processor)/launch/pc_processor.launch.py">
+        <arg name='use_sim_time' value='true'/>
+        <arg name='robot_name' value='vikings_bot_1'/>
+    </include>
+
     <!-- Launch first robot -->
     <include file="$(find-pkg-share vikings_bot_gazebo)/launch/spawn.launch.xml">
         <arg name="vikings_bot_name" value="vikings_bot_1"/>

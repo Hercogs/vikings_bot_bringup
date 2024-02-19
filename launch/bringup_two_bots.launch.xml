@@ -5,13 +5,13 @@
     <!-- Launch gazebo world seperately -->
 
     <!-- Launch point cloud processor for 1st robot-->
-    <include file="$(find-pkg-share point_cloud_processor)/launch/pc_processor.launch.py">
+    <include file="$(find-pkg-share vikings_bot_point_cloud_processor)/launch/pc_processor.launch.xml">
         <arg name='use_sim_time' value='true'/>
         <arg name='robot_name' value='vikings_bot_1'/>
     </include>
 
     <!-- Launch point cloud processor for 2nd robot-->
-    <include file="$(find-pkg-share point_cloud_processor)/launch/pc_processor.launch.py">
+    <include file="$(find-pkg-share vikings_bot_point_cloud_processor)/launch/pc_processor.launch.xml">
         <arg name='use_sim_time' value='true'/>
         <arg name='robot_name' value='vikings_bot_2'/>
     </include>

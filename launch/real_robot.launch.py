@@ -21,8 +21,25 @@ def generate_launch_description():
     )
 
     
-    # Lidar node
+    # Robot state publisher with control
     state_publisher_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [
+                PathJoinSubstitution([
+                    FindPackageShare("vikings_bot_description"),
+                    "launch",
+                    "robot_state_publisher.launch.py"
+                ])
+            ]
+        ),
+        launch_arguments=[
+            ("vikings_bot_name", LaunchConfiguration("vikings_bot_name")),
+            ("use_sim", LaunchConfiguration("use_sim")),
+        ],
+    )
+
+    # Lidar node
+    lidar_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
                 PathJoinSubstitution([
@@ -37,11 +54,28 @@ def generate_launch_description():
         ],
     )
 
+    #  RVIZ configuration file
+    rviz_file = "simple_odom.rviz"
+    rviz_config_dir = PathJoinSubstitution([
+        FindPackageShare("vikings_bot_bringup"), "rviz", rviz_file])
+
+    rviz_node = Node(
+        package="rviz2",
+        executable="rviz2",
+        output="screen",
+        parameters=[{
+            "use_sim_time": LaunchConfiguration("use_sim"),
+        }],
+        arguments=["-d", rviz_config_dir]
+    )
+
 
     return LaunchDescription(
         [
             vikings_bot_name_arg,
             use_sim_arg,
             state_publisher_node,
+            lidar_node,
+            rviz_node
         ]
     )

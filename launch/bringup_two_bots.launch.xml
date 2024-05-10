@@ -30,6 +30,12 @@
     <!-- Launch Map server -->
     <include file="$(find-pkg-share vikings_bot_map_server)/launch/map_server.launch.py">
         <arg name="use_rviz" value="False"/>
+        <arg name="vikings_bot_name" value="vikings_bot_1"/>
+    </include>
+
+    <include file="$(find-pkg-share vikings_bot_map_server)/launch/map_server.launch.py">
+        <arg name="use_rviz" value="False"/>
+        <arg name="vikings_bot_name" value="vikings_bot_2"/>
     </include>
 
 

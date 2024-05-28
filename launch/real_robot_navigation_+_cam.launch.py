@@ -41,6 +41,11 @@ def generate_launch_description():
                 name='filter_depth_cam',
                 default_value='false',
                 description='Filter depth camera data based on segmentation model')
+    profile_arg = DeclareLaunchArgument(
+        name='profile',
+        default_value='640x480x30',
+        description='Set resolution and FPS for rgb and depth cameras'
+    )
     
     # Robot state publisher with control
     state_publisher_node = IncludeLaunchDescription(
@@ -90,8 +95,8 @@ def generate_launch_description():
             ("camera_namespace", LaunchConfiguration("vikings_bot_name")),
             #("camera_name", PythonExpression(["'",LaunchConfiguration("vikings_bot_name"),"_camera'"])), # this renames the node, topics and frame ids
             ("align_depth.enable", "true"),
-            ("depth_module.depth_profile", "640x480x30"),
-            ("rgb_camera.color_profile", "640x480x30"),
+            ("depth_module.depth_profile", LaunchConfiguration('profile')),
+            ("rgb_camera.color_profile", LaunchConfiguration('profile')),
             ("pointcloud.enable","true")
         ],
     )
@@ -247,6 +252,7 @@ def generate_launch_description():
             use_depth_cam_arg,
             filter_lidar_arg,
             filter_depth_cam_arg,
+            profile_arg,
 
             state_publisher_node,
             lidar_node,

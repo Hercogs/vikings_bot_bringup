@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <launch>
-
+    <!-- these parameters are put here because both path_planner_server and point cloud processor depend on them-->
+    <let name='filter_lidar_param' value='true'/>
+    <let name='filter_depth_cam_param' value='true'/>
+    <let name='use_lidar_param' value='true'/>
+    <let name='use_depth_cam_param' value='true'/>
     <!-- Launch gazebo world seperately -->
+
+    <!-- Launch point cloud processor -->
+    <include file="$(find-pkg-share vikings_bot_point_cloud_processor)/launch/pc_processor.launch.py">
+        <arg name='use_sim_time' value='true'/> <!--!!!-->
+        <arg name='robot_name' value='vikings_bot_1'/>
+        <arg name='safe_classes' value='[7, 15]'/> <!--!!!-->
+        <arg name='vis_sem_seg' value='false'/>
+        <arg name='seg_bb_type' value='0'/>
+        <arg name='seg_bb_pad' value='0'/>
+        <arg name='filter_buffer_len' value='60'/>
+        <arg name='filter_prob_threshold' value='0.5'/> <!--!!!-->
+        
+        <arg name='filter_lidar' value='$(var filter_lidar_param)'/> <!--!!!-->
+        <arg name='filter_depth_cam' value='$(var filter_depth_cam_param)'/> <!--!!!-->
+        <arg name='perf_seg_sem' value='true'/> <!--!!!-->
+    </include>
 
     <!-- Launch first robot -->
     <include file="$(find-pkg-share vikings_bot_gazebo)/launch/spawn.launch.xml">
@@ -34,6 +54,10 @@
     <!-- Path plan first robot -->
     <include file="$(find-pkg-share vikings_bot_path_planner_server)/launch/spawn_path_planner.launch.py">
         <arg name="vikings_bot_name" value="vikings_bot_1"/>
+        <arg name="filter_lidar" value='$(var filter_lidar_param)'/>
+        <arg name="filter_depth_cam" value='$(var filter_depth_cam_param)' />
+        <arg name="use_lidar" value='$(var use_lidar_param)' />
+        <arg name="use_depth_cam" value='$(var use_depth_cam_param)' />
     </include>
 
 

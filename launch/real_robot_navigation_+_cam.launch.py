@@ -1,9 +1,7 @@
-import os
-
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, TextSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 from launch.conditions import IfCondition
@@ -90,12 +88,24 @@ def generate_launch_description():
         ),
         launch_arguments=[
             ("camera_namespace", LaunchConfiguration("vikings_bot_name")),
-            ("camera_name", TextSubstitution("camera")),
-            ("align_depth.enable", TextSubstitution("true")),
-            ("depth_module.depth_profile", TextSubstitution("640x480x30")),
-            ("rgb_camera.color_profile", TextSubstitution("640x480x30")),
-            ("pointcloud.enable",TextSubstitution("true"))
+            #("camera_name", PythonExpression(["'",LaunchConfiguration("vikings_bot_name"),"_camera'"])), # this renames the node, topics and frame ids
+            ("align_depth.enable", "true"),
+            ("depth_module.depth_profile", "640x480x30"),
+            ("rgb_camera.color_profile", "640x480x30"),
+            ("pointcloud.enable","true")
         ],
+    )
+
+    # add a TF tree relation between /vikings_bot_x/camera_link and realsense camera frame
+    # TODO: find a better way to fix issue. Ideally camera_link (from realsense node) should be renamed to vikings_bot_1/camera_link
+    rs_tf_node = Node(
+            package = "tf2_ros",
+            executable = "static_transform_publisher",
+            arguments = ["0", "0", "0", "0", "0", "0",
+                        PythonExpression(["'",LaunchConfiguration("vikings_bot_name"), "/camera_link'"]), #parent
+                        "camera_link"], #child
+                        #PythonExpression(["'",LaunchConfiguration("vikings_bot_name"),"_camera_link'"])], #child
+            
     )
 
     # Point cloud processor node
@@ -112,17 +122,17 @@ def generate_launch_description():
         launch_arguments=[
             ("use_sim_time", LaunchConfiguration("use_sim")),
             ("robot_name", LaunchConfiguration("vikings_bot_name")),
-            ("camera_name", TextSubstitution("camera")),
-            ("safe_classes", TextSubstitution("[5]")), # see "Classes for deeplabv3_mobilenet_v3_large" comment
-            ("vis_sem_seg", TextSubstitution("false")),
-            ("seg_bb_type", TextSubstitution("0")),
-            ("seg_bb_pad", TextSubstitution("0")),
-            ("filter_buffer_len", TextSubstitution("60")),
-            ("filter_prob_threshold", TextSubstitution("0.5"))
+            ("camera_name", "camera"),
+            ("safe_classes", "[5]"), # see "Classes for deeplabv3_mobilenet_v3_large" comment #TODO add CLI argument
+            ("vis_sem_seg", "false"),
+            ("seg_bb_type", "0"),
+            ("seg_bb_pad", "0"),
+            ("filter_buffer_len", "60"),
+            ("filter_prob_threshold", "0.5"),
             # main arguments:
             ("filter_lidar", LaunchConfiguration("filter_lidar")),
             ("filter_depth_cam", LaunchConfiguration("filter_depth_cam")),
-            ("perf_seg_sem", TextSubstitution("true")),
+            ("perf_seg_sem", "true"),
         ]
     )
     """
@@ -241,6 +251,7 @@ def generate_launch_description():
             state_publisher_node,
             lidar_node,
             depth_cam_node,
+            rs_tf_node,
             sensor_filter_node,
             map_server_node,
             localization_server_node,

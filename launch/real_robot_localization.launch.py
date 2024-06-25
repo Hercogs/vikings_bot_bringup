@@ -3,7 +3,8 @@ import os
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, TextSubstitution
+from launch.substitutions import (LaunchConfiguration,
+            PathJoinSubstitution, TextSubstitution, EnvironmentVariable)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 from launch.conditions import IfCondition
@@ -14,7 +15,7 @@ def generate_launch_description():
 
     ### INPUT ###
     vikings_bot_name_arg = DeclareLaunchArgument("vikings_bot_name",
-                default_value="vikings_bot_1",
+                default_value=EnvironmentVariable("ROBOT_NAME"),
                 description="Namespace of robot - [vikings_bot_1 or vikings_bot_2]"
     )
     use_sim_arg = DeclareLaunchArgument("use_sim", default_value="false",

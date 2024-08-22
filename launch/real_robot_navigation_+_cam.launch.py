@@ -41,6 +41,11 @@ def generate_launch_description():
                 name='filter_depth_cam',
                 default_value='false',
                 description='Filter depth camera data based on segmentation model')
+    safe_classes_arg = DeclareLaunchArgument(
+        name='safe_classes',
+        default_value='[-1]',
+        description='A list of classes that are considered a safe obstacle.'
+    )
     profile_arg = DeclareLaunchArgument(
         name='profile',
         default_value='640x480x30',
@@ -128,7 +133,7 @@ def generate_launch_description():
             ("use_sim_time", LaunchConfiguration("use_sim")),
             ("robot_name", LaunchConfiguration("vikings_bot_name")),
             ("camera_name", "camera"),
-            ("safe_classes", "[5]"), # see "Classes for deeplabv3_mobilenet_v3_large" comment #TODO add CLI argument
+            ("safe_classes", LaunchConfiguration("safe_classes")), # see "Classes for deeplabv3_mobilenet_v3_large" comment
             ("vis_sem_seg", "false"),
             ("seg_bb_type", "0"),
             ("seg_bb_pad", "0"),
@@ -252,6 +257,7 @@ def generate_launch_description():
             use_depth_cam_arg,
             filter_lidar_arg,
             filter_depth_cam_arg,
+            safe_classes_arg,
             profile_arg,
 
             state_publisher_node,

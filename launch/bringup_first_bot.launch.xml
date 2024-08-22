@@ -26,6 +26,7 @@
 
     <!-- Launch first robot -->
     <include file="$(find-pkg-share vikings_bot_gazebo)/launch/spawn.launch.xml">
+        <!-- <arg name="vikings_bot_name" value="$(env ROBOT_NAME)"/> -->
         <arg name="vikings_bot_name" value="vikings_bot_1"/>
         <arg name="robot_file" value="vikings_bot.xacro"/>
         <arg name="x_spawn" value="0.0"/>

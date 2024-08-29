@@ -1,18 +1,45 @@
 import os
+import re
 
+import launch
 from launch import LaunchDescription
 from launch_ros.actions import Node
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import (LaunchConfiguration,
-            PathJoinSubstitution, TextSubstitution, EnvironmentVariable)
+from launch.actions import (
+    DeclareLaunchArgument,
+    IncludeLaunchDescription,
+    LogInfo,
+    ExecuteProcess,
+    RegisterEventHandler
+)
+from launch.substitutions import (
+    LaunchConfiguration, PathJoinSubstitution, TextSubstitution,
+    EnvironmentVariable, PythonExpression
+)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.event_handlers import OnProcessIO
 
 from launch.conditions import IfCondition
 from launch_ros.substitutions import FindPackageShare
 
 
+# Clean string
+def escape_ansi(line):
+    return re.sub(r'\033\[(\d|;)+?m', '', line)
+
+# Create event handler that waits for an output message and then returns actions
+def on_matching_output(matcher: str, result: launch.SomeActionsType):
+    def on_output(event: OnProcessIO):
+        for line in event.text.decode("ascii").splitlines():
+            if matcher in escape_ansi(line):
+                return result
+
+    return on_output
+
+
 def generate_launch_description():
 
+    diff_drive_loaded_message = "Configured and activated diffbot_base_controller"
+    
     ### INPUT ###
     vikings_bot_name_arg = DeclareLaunchArgument("vikings_bot_name",
                 default_value=EnvironmentVariable("ROBOT_NAME"),
@@ -21,7 +48,7 @@ def generate_launch_description():
     use_sim_arg = DeclareLaunchArgument("use_sim", default_value="false",
                 description="Use simulation clock or real time"
     )
-    use_gui_arg = DeclareLaunchArgument("use_gui", default_value="true",
+    use_gui_arg = DeclareLaunchArgument("use_gui", default_value="false",
                 description="Use GUI software! Rviz, ..."
     )
     map_file_arg = DeclareLaunchArgument('map_file',
@@ -32,20 +59,21 @@ def generate_launch_description():
 
     
     # Robot state publisher with control
-    state_publisher_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [
-                PathJoinSubstitution([
+    state_publisher_node = ExecuteProcess(
+        name="state_publisher_node",
+        cmd=[
+            "ros2",
+            "launch",
+            PathJoinSubstitution([
                     FindPackageShare("vikings_bot_description"),
                     "launch",
                     "robot_state_publisher.launch.py"
-                ])
-            ]
-        ),
-        launch_arguments=[
-            ("vikings_bot_name", LaunchConfiguration("vikings_bot_name")),
-            ("use_sim", LaunchConfiguration("use_sim")),
+            ]),
+            PythonExpression(["'vikings_bot_name:=", LaunchConfiguration("vikings_bot_name"), "'"]),
+            PythonExpression(["'use_sim:=", LaunchConfiguration("use_sim"), "'"]),
+
         ],
+        output="screen",
     )
 
     # Lidar node
@@ -116,6 +144,20 @@ def generate_launch_description():
         ],
     )
 
+    delay_navigation_nodes = RegisterEventHandler(
+        event_handler=OnProcessIO(
+            target_action=state_publisher_node,
+            on_stdout=on_matching_output(
+                diff_drive_loaded_message,
+                [
+                    map_server_node,
+                    localization_server_node,
+                    path_planner_server_node
+                ]
+            )
+        )
+    )
+
 
     #  RVIZ configuration file
     rviz_file = "simple_navigation.rviz"
@@ -145,9 +187,7 @@ def generate_launch_description():
 
             state_publisher_node,
             lidar_node,
-            map_server_node,
-            localization_server_node,
-            path_planner_server_node,
+            delay_navigation_nodes,
             rviz_node
         ]
     )

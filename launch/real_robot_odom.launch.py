@@ -8,6 +8,7 @@ from launch.substitutions import (LaunchConfiguration,
             EnvironmentVariable)
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
+from launch.conditions import IfCondition
 from launch_ros.substitutions import FindPackageShare
 
 
@@ -20,6 +21,9 @@ def generate_launch_description():
     )
     use_sim_arg = DeclareLaunchArgument("use_sim", default_value="false",
                 description="Use simulation clock or real time"
+    )
+    use_gui_arg = DeclareLaunchArgument("use_gui", default_value="false",
+                description="Use GUI software! Rviz, ..."
     )
 
     
@@ -52,7 +56,10 @@ def generate_launch_description():
         parameters=[{
             "use_sim_time": LaunchConfiguration("use_sim"),
         }],
-        arguments=["-d", rviz_config_dir]
+        arguments=["-d", rviz_config_dir],
+        condition = IfCondition(
+            LaunchConfiguration("use_gui")
+        ),
     )
 
 
@@ -60,6 +67,7 @@ def generate_launch_description():
         [
             vikings_bot_name_arg,
             use_sim_arg,
+            use_gui_arg,
             state_publisher_node,
             rviz_node
         ]

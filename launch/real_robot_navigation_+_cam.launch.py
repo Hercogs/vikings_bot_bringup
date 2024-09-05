@@ -222,8 +222,6 @@ def generate_launch_description():
             #arguments to set topics
             ("use_lidar", LaunchConfiguration("use_lidar")),
             ("use_depth_cam", LaunchConfiguration("use_depth_cam")),
-            ("filter_lidar", LaunchConfiguration("filter_lidar")),
-            ("filter_depth_cam", LaunchConfiguration("filter_depth_cam")),
         ],
     )
 

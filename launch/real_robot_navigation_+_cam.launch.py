@@ -18,7 +18,7 @@ def generate_launch_description():
     use_sim_arg = DeclareLaunchArgument("use_sim", default_value="false",
                 description="Use simulation clock or real time"
     )
-    use_gui_arg = DeclareLaunchArgument("use_gui", default_value="true",
+    use_gui_arg = DeclareLaunchArgument("use_gui", default_value="false",
                 description="Use GUI software! Rviz, ..."
     )
     map_file_arg = DeclareLaunchArgument('map_file',
@@ -227,7 +227,7 @@ def generate_launch_description():
 
 
     #  RVIZ configuration file
-    rviz_file = "simple_navigation.rviz"
+    rviz_file = "rviz_config_sem.rviz"
     rviz_config_dir = PathJoinSubstitution([
         FindPackageShare("vikings_bot_bringup"), "rviz", rviz_file])
 

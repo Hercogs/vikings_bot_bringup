@@ -224,7 +224,22 @@ def generate_launch_description():
             ("use_depth_cam", LaunchConfiguration("use_depth_cam")),
         ],
     )
-
+    
+    # Display manager node
+    display_manager_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [
+                PathJoinSubstitution([
+                    FindPackageShare("vikings_bot_firmware_py"),
+                    "launch",
+                    "display_manager.launch.py"
+                ])
+            ]
+        ),
+        launch_arguments=[
+            ("vikings_bot_name", LaunchConfiguration("vikings_bot_name"))
+        ]
+    )
 
     #  RVIZ configuration file
     rviz_file = "rviz_config_sem.rviz"
@@ -266,6 +281,7 @@ def generate_launch_description():
             map_server_node,
             localization_server_node,
             path_planner_server_node,
+            display_manager_node,
             rviz_node
         ]
     )

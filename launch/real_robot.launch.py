@@ -83,6 +83,8 @@ def generate_launch_description():
         [
             vikings_bot_name_arg,
             use_sim_arg,
+            use_gui_arg,
+            
             state_publisher_node,
             lidar_node,
             rviz_node

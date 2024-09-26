@@ -1,14 +1,44 @@
+import os
+import re
+
+import launch
 from launch import LaunchDescription
 from launch_ros.actions import Node
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution, PythonExpression, EnvironmentVariable
+from launch.actions import (
+    DeclareLaunchArgument,
+    IncludeLaunchDescription,
+    LogInfo,
+    ExecuteProcess,
+    RegisterEventHandler
+)
+from launch.substitutions import (
+    LaunchConfiguration, PathJoinSubstitution, TextSubstitution,
+    EnvironmentVariable, PythonExpression
+)
+from launch.event_handlers import OnProcessIO
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 from launch.conditions import IfCondition
 from launch_ros.substitutions import FindPackageShare
 
 
+# Clean string
+def escape_ansi(line):
+    return re.sub(r'\033\[(\d|;)+?m', '', line)
+
+# Create event handler that waits for an output message and then returns actions
+def on_matching_output(matcher: str, result: launch.SomeActionsType):
+    def on_output(event: OnProcessIO):
+        for line in event.text.decode("ascii").splitlines():
+            if matcher in escape_ansi(line):
+                return result
+
+    return on_output
+
+
 def generate_launch_description():
+
+    diff_drive_loaded_message = "Configured and activated diffbot_base_controller"
 
     ### INPUT ###
     vikings_bot_name_arg = DeclareLaunchArgument("vikings_bot_name",
@@ -22,7 +52,7 @@ def generate_launch_description():
                 description="Use GUI software! Rviz, ..."
     )
     map_file_arg = DeclareLaunchArgument('map_file',
-                default_value='vnpc_edit.yaml',
+                default_value='vnpc_full.yaml',
                 description='Specify map name'
     )
     use_lidar_arg = DeclareLaunchArgument(
@@ -53,20 +83,21 @@ def generate_launch_description():
     )
     
     # Robot state publisher with control
-    state_publisher_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [
-                PathJoinSubstitution([
+    state_publisher_node = ExecuteProcess(
+        name="state_publisher_node",
+        cmd=[
+            "ros2",
+            "launch",
+            PathJoinSubstitution([
                     FindPackageShare("vikings_bot_description"),
                     "launch",
                     "robot_state_publisher.launch.py"
-                ])
-            ]
-        ),
-        launch_arguments=[
-            ("vikings_bot_name", LaunchConfiguration("vikings_bot_name")),
-            ("use_sim", LaunchConfiguration("use_sim")),
+            ]),
+            PythonExpression(["'vikings_bot_name:=", LaunchConfiguration("vikings_bot_name"), "'"]),
+            PythonExpression(["'use_sim:=", LaunchConfiguration("use_sim"), "'"]),
+
         ],
+        output="screen",
     )
 
     # Lidar node
@@ -224,7 +255,22 @@ def generate_launch_description():
             ("use_depth_cam", LaunchConfiguration("use_depth_cam")),
         ],
     )
-    
+    delay_navigation_nodes = RegisterEventHandler(
+        event_handler=OnProcessIO(
+            target_action=state_publisher_node,
+            on_stdout=on_matching_output(
+                diff_drive_loaded_message,
+                [
+                    rs_tf_node,
+                    sensor_filter_node,
+                    map_server_node,
+                    localization_server_node,
+                    path_planner_server_node,
+                ]
+            )
+        )
+    )
+
     # Display manager node
     display_manager_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -278,9 +324,7 @@ def generate_launch_description():
             depth_cam_node,
             rs_tf_node,
             sensor_filter_node,
-            map_server_node,
-            localization_server_node,
-            path_planner_server_node,
+            delay_navigation_nodes,
             display_manager_node,
             rviz_node
         ]

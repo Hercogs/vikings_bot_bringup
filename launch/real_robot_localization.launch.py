@@ -53,7 +53,7 @@ def generate_launch_description():
                 description="Use GUI software! Rviz, ..."
     )
     map_file_arg = DeclareLaunchArgument('map_file',
-                default_value='vnpc_edit.yaml',
+                default_value='vnpc_full.yaml',
                 description='Specify map name'
     )
     

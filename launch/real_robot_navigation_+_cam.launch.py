@@ -52,7 +52,7 @@ def generate_launch_description():
                 description="Use GUI software! Rviz, ..."
     )
     map_file_arg = DeclareLaunchArgument('map_file',
-                default_value='vnpc_edit.yaml',
+                default_value='vnpc_full.yaml',
                 description='Specify map name'
     )
     use_lidar_arg = DeclareLaunchArgument(
@@ -253,8 +253,6 @@ def generate_launch_description():
             #arguments to set topics
             ("use_lidar", LaunchConfiguration("use_lidar")),
             ("use_depth_cam", LaunchConfiguration("use_depth_cam")),
-            ("filter_lidar", LaunchConfiguration("filter_lidar")),
-            ("filter_depth_cam", LaunchConfiguration("filter_depth_cam")),
         ],
     )
 
@@ -276,7 +274,7 @@ def generate_launch_description():
 
 
     #  RVIZ configuration file
-    rviz_file = "simple_navigation.rviz"
+    rviz_file = "rviz_config_sem.rviz"
     rviz_config_dir = PathJoinSubstitution([
         FindPackageShare("vikings_bot_bringup"), "rviz", rviz_file])
 

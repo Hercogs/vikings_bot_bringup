@@ -63,9 +63,9 @@
 
 
     <!-- Launch Rviz for visualization -->
-    <arg name="rviz_config" default="two_robots_update.rviz"/>
+    <arg name="rviz_config" default="rviz_config_sem.rviz"/> <!-- default="two_robots_update.rviz"/> -->
 
-    <node pkg="rviz2" exec="rviz2" name="rviz2_2_robots" output="screen" args="-d $(find-pkg-share vikings_bot_path_planner_server)/rviz/$(var rviz_config)">
+    <node pkg="rviz2" exec="rviz2" name="rviz2_2_robots" output="screen" args="-d $(find-pkg-share vikings_bot_bringup)/rviz/$(var rviz_config)"> <!--$(find-pkg-share vikings_bot_path_planner_server)-->
         <param name="use_sim_time" value="True"/>
     </node>
 

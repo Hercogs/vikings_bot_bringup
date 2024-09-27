@@ -24,6 +24,11 @@
         <arg name='perf_seg_sem' value='true'/> <!--!!!-->
     </include>
 
+    <!-- launch display manager-->
+    <include file="$(find-pkg-share vikings_bot_firmware_py)/launch/display_manager.launch.py">
+        <arg name='vikings_bot_name' value='vikings_bot_1'/>
+    </include>
+
     <!-- Launch first robot -->
     <include file="$(find-pkg-share vikings_bot_gazebo)/launch/spawn.launch.xml">
         <!-- <arg name="vikings_bot_name" value="$(env ROBOT_NAME)"/> -->

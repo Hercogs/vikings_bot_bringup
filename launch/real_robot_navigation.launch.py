@@ -158,6 +158,21 @@ def generate_launch_description():
         )
     )
 
+    # Display manager node
+    display_manager_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [
+                PathJoinSubstitution([
+                    FindPackageShare("vikings_bot_firmware_py"),
+                    "launch",
+                    "display_manager.launch.py"
+                ])
+            ]
+        ),
+        launch_arguments=[
+            ("vikings_bot_name", LaunchConfiguration("vikings_bot_name"))
+        ]
+    )
 
     #  RVIZ configuration file
     rviz_file = "simple_navigation.rviz"
@@ -188,6 +203,7 @@ def generate_launch_description():
             state_publisher_node,
             lidar_node,
             delay_navigation_nodes,
+            display_manager_node,
             rviz_node
         ]
     )

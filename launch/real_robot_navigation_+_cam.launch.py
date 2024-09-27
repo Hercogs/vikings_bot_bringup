@@ -133,7 +133,7 @@ def generate_launch_description():
             ("align_depth.enable", "true"),
             ("depth_module.depth_profile", LaunchConfiguration('profile')),
             ("rgb_camera.color_profile", LaunchConfiguration('profile')),
-            ("pointcloud.enable","true")
+            ("pointcloud.enable","false"),
         ],
     )
 
@@ -255,15 +255,14 @@ def generate_launch_description():
             ("use_depth_cam", LaunchConfiguration("use_depth_cam")),
         ],
     )
-
     delay_navigation_nodes = RegisterEventHandler(
         event_handler=OnProcessIO(
             target_action=state_publisher_node,
             on_stdout=on_matching_output(
                 diff_drive_loaded_message,
                 [
-                    rs_tf_node,
-                    sensor_filter_node,
+                    # rs_tf_node,
+                    # sensor_filter_node,
                     map_server_node,
                     localization_server_node,
                     path_planner_server_node,
@@ -272,6 +271,21 @@ def generate_launch_description():
         )
     )
 
+    # Display manager node
+    display_manager_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [
+                PathJoinSubstitution([
+                    FindPackageShare("vikings_bot_firmware_py"),
+                    "launch",
+                    "display_manager.launch.py"
+                ])
+            ]
+        ),
+        launch_arguments=[
+            ("vikings_bot_name", LaunchConfiguration("vikings_bot_name"))
+        ]
+    )
 
     #  RVIZ configuration file
     rviz_file = "rviz_config_sem.rviz"
@@ -308,7 +322,10 @@ def generate_launch_description():
             state_publisher_node,
             lidar_node,
             depth_cam_node,
+            rs_tf_node,
+            sensor_filter_node,
             delay_navigation_nodes,
+            display_manager_node,
             rviz_node
         ]
     )

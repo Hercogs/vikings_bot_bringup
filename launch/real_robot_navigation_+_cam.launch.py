@@ -133,7 +133,7 @@ def generate_launch_description():
             ("align_depth.enable", "true"),
             ("depth_module.depth_profile", LaunchConfiguration('profile')),
             ("rgb_camera.color_profile", LaunchConfiguration('profile')),
-            ("pointcloud.enable","true")
+            ("pointcloud.enable","false"),
         ],
     )
 
@@ -261,8 +261,8 @@ def generate_launch_description():
             on_stdout=on_matching_output(
                 diff_drive_loaded_message,
                 [
-                    rs_tf_node,
-                    sensor_filter_node,
+                    # rs_tf_node,
+                    # sensor_filter_node,
                     map_server_node,
                     localization_server_node,
                     path_planner_server_node,

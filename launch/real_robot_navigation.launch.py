@@ -163,7 +163,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             [
                 PathJoinSubstitution([
-                    FindPackageShare("vikings_bot_firmware_py"),
+                    FindPackageShare("vikings_bot_display_manager"),
                     "launch",
                     "display_manager.launch.py"
                 ])

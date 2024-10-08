@@ -303,6 +303,17 @@ def generate_launch_description():
         ),
     )
 
+    bridge_config_file = PathJoinSubstitution(
+        [FindPackageShare("vikings_bot_bringup"),
+         'config',
+         PythonExpression(["'", LaunchConfiguration("vikings_bot_name"), "_domain_bridge_config.yaml'"]) ])
+    
+    bridge_node =  Node(
+        package = "domain_bridge",
+        executable = "domain_bridge",
+        arguments = [bridge_config_file],
+    )
+
 
     return LaunchDescription(
         [
@@ -324,6 +335,7 @@ def generate_launch_description():
             sensor_filter_node,
             delay_navigation_nodes,
             display_manager_node,
+            bridge_node,
             rviz_node
         ]
     )

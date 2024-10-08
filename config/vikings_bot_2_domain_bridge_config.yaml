@@ -1,0 +1,53 @@
+# ====================================
+# Each robot runs on its own domain:
+# Vikings Bot 1 - on domain ID 1
+# Vikings Bot 2 - on domain ID 2
+# This config bridges needed topics from Vikings Bot domain to default domain ID (0)
+name: vikings_bot_2_bridge
+from_domain: 2
+to_domain: 0
+
+topics:
+  # Published from domain 0 to robot's domain
+  /vikings_bot_2/initialpose:
+    type: geometry_msgs/msg/PoseWithCovarianceStamped
+    reversed: true
+  /vikings_bot_2/goal_pose:
+    type: geometry_msgs/msg/PoseStamped
+    reversed: true
+
+  # Recieved from robot to domain 0
+  /tf:
+    type: tf2_msgs/msg/TFMessage
+  /tf_static:
+    type: tf2_msgs/msg/TFMessage
+  /vikings_bot_2/amcl_pose:
+    type: geometry_msgs/msg/PoseWithCovarianceStamped
+  /vikings_bot_2/vikings_bot_2_camera/color/image_raw:
+    type: sensor_msgs/msg/Image
+  /vikings_bot_2/vikings_bot_2_camera/color/semantic_segmentation_info_board:
+    type: sensor_msgs/msg/Image
+  /vikings_bot_2/lidar_scan:
+    type: sensor_msgs/msg/LaserScan
+  /vikings_bot_2/global_costmap/costmap:
+    type: nav_msgs/msg/OccupancyGrid
+  /vikings_bot_2/global_costmap/costmap_updates:
+    type: map_msgs/msg/OccupancyGridUpdate
+  /vikings_bot_2/global_costmap/published_footprint:
+    type: geometry_msgs/msg/PolygonStamped
+  /vikings_bot_2/local_costmap/costmap:
+    type: nav_msgs/msg/OccupancyGrid
+  /vikings_bot_2/local_costmap/costmap_updates:
+    type: map_msgs/msg/OccupancyGridUpdate
+  /vikings_bot_2/local_costmap/published_footprint:
+    type: geometry_msgs/msg/PolygonStamped
+  /vikings_bot_2/local_plan:
+    type: nav_msgs/msg/Path
+  /vikings_bot_2/map:
+    type: nav_msgs/msg/OccupancyGrid
+  /vikings_bot_2/map_updates:
+    type: map_msgs/msg/OccupancyGridUpdate
+  /vikings_bot_2/particle_cloud:
+    type: nav2_msgs/msg/ParticleCloud
+  /vikings_bot_2/plan:
+    type: nav_msgs/msg/Path

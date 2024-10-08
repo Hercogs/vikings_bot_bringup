@@ -17,9 +17,15 @@ topics:
     reversed: true
 
   # Recieved from robot to domain 0
+  /tf:
+    type: tf2_msgs/msg/TFMessage
+  /tf_static:
+    type: tf2_msgs/msg/TFMessage
   /vikings_bot_2/amcl_pose:
     type: geometry_msgs/msg/PoseWithCovarianceStamped
   /vikings_bot_2/vikings_bot_2_camera/color/image_raw:
+    type: sensor_msgs/msg/Image
+  /vikings_bot_2/vikings_bot_2_camera/color/semantic_segmentation_info_board:
     type: sensor_msgs/msg/Image
   /vikings_bot_2/lidar_scan:
     type: sensor_msgs/msg/LaserScan
@@ -28,7 +34,7 @@ topics:
   /vikings_bot_2/global_costmap/costmap_updates:
     type: map_msgs/msg/OccupancyGridUpdate
   /vikings_bot_2/global_costmap/published_footprint:
-    type: geometry_msgs/msg/PolygonStampe
+    type: geometry_msgs/msg/PolygonStamped
   /vikings_bot_2/local_costmap/costmap:
     type: nav_msgs/msg/OccupancyGrid
   /vikings_bot_2/local_costmap/costmap_updates:

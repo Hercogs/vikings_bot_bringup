@@ -23,12 +23,12 @@ topics:
     type: tf2_msgs/msg/TFMessage
   /vikings_bot_1/amcl_pose:
     type: geometry_msgs/msg/PoseWithCovarianceStamped
-  /vikings_bot_1/vikings_bot_1_camera/color/image_raw:
-    type: sensor_msgs/msg/Image
   /vikings_bot_1/vikings_bot_1_camera/color/semantic_segmentation_info_board:
     type: sensor_msgs/msg/Image
   /vikings_bot_1/lidar_scan:
     type: sensor_msgs/msg/LaserScan
+  /vikings_bot_1/safe_obstacle_points:
+    type: sensor_msgs/msg/PointCloud2
   /vikings_bot_1/global_costmap/costmap:
     type: nav_msgs/msg/OccupancyGrid
   /vikings_bot_1/global_costmap/costmap_updates:

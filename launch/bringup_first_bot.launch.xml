@@ -2,10 +2,10 @@
 
 <launch>
     <!-- these parameters are put here because both path_planner_server and point cloud processor depend on them-->
-    <let name='filter_lidar_param' value='true'/>
+    <let name='filter_lidar_param' value='false'/>
     <let name='filter_depth_cam_param' value='true'/>
     <let name='use_lidar_param' value='true'/>
-    <let name='use_depth_cam_param' value='true'/>
+    <let name='use_depth_cam_param' value='false'/>
     <!-- Launch gazebo world seperately -->
 
     <!-- Launch point cloud processor -->
@@ -24,10 +24,10 @@
         <arg name='perf_seg_sem' value='true'/> <!--!!!-->
     </include>
 
-    <!-- launch display manager-->
+    <!-- launch display manager
     <include file="$(find-pkg-share vikings_bot_firmware_py)/launch/display_manager.launch.py">
         <arg name='vikings_bot_name' value='vikings_bot_1'/>
-    </include>
+    </include> -->
 
     <!-- Launch first robot -->
     <include file="$(find-pkg-share vikings_bot_gazebo)/launch/spawn.launch.xml">

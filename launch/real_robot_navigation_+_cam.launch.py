@@ -82,6 +82,7 @@ def generate_launch_description():
         description='Set resolution and FPS for rgb and depth cameras'
     )
     camera_name = PythonExpression(["'",LaunchConfiguration("vikings_bot_name"),"_camera'"])
+    camera_topic = PythonExpression(["'",LaunchConfiguration("vikings_bot_name"),"_camera/color/image_raw'"])
 
     # Robot state publisher with control
     state_publisher_node = ExecuteProcess(
@@ -145,6 +146,24 @@ def generate_launch_description():
             arguments = ["0", "0", "0", "0", "0", "0",
                         PythonExpression(["'",LaunchConfiguration("vikings_bot_name"), "/camera_link'"]), #parent
                         PythonExpression(["'",camera_name,"_link'"])], #child
+    )
+
+    # Node that streams camera to web
+    camera_stream_node = Node(
+        PythonLaunchDescriptionSource(
+            [
+                PathJoinSubstitution([
+                    FindPackageShare("vikings_bot_camera_streamer"),
+                    "launch",
+                    "svideo_steam.launch.py"
+                ])
+            ]
+        ),
+        launch_arguments=[
+            ("robot_name", LaunchConfiguration("vikings_bot_name")),
+            ("fps", 10),
+            ("camera_topic", camera_topic)
+        ],
     )
 
     # Point cloud processor node
@@ -332,6 +351,7 @@ def generate_launch_description():
             lidar_node,
             depth_cam_node,
             rs_tf_node,
+            camera_stream_node,
             sensor_filter_node,
             delay_navigation_nodes,
             display_manager_node,

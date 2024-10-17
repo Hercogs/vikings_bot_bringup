@@ -69,11 +69,11 @@ def generate_launch_description():
                 description='Filter lidar data based on segmentation model')
     filter_depth_cam_arg = DeclareLaunchArgument(
                 name='filter_depth_cam',
-                default_value='false',
+                default_value='true',
                 description='Filter depth camera data based on segmentation model')
     safe_classes_arg = DeclareLaunchArgument(
         name='safe_classes',
-        default_value='[-1]',
+        default_value='[5]',
         description='A list of classes that are considered a safe obstacle.'
     )
     profile_arg = DeclareLaunchArgument(
@@ -82,6 +82,7 @@ def generate_launch_description():
         description='Set resolution and FPS for rgb and depth cameras'
     )
     camera_name = PythonExpression(["'",LaunchConfiguration("vikings_bot_name"),"_camera'"])
+    camera_topic = PythonExpression(["'",LaunchConfiguration("vikings_bot_name"),"_camera/color/image_raw'"])
 
     # Robot state publisher with control
     state_publisher_node = ExecuteProcess(
@@ -146,6 +147,22 @@ def generate_launch_description():
                         PythonExpression(["'",LaunchConfiguration("vikings_bot_name"), "/camera_link'"]), #parent
                         PythonExpression(["'",camera_name,"_link'"])], #child
     )
+
+    # Node that streams camera to web
+    camera_stream_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [
+                PathJoinSubstitution([
+                    FindPackageShare("vikings_bot_camera_streamer"),
+                    "launch",
+                    "video_steam.launch.py"
+                ])
+            ]),
+        launch_arguments=[
+            ("robot_name", LaunchConfiguration("vikings_bot_name")),
+            ("fps", "10"),
+            ("camera_topic", camera_topic)
+        ])
 
     # Point cloud processor node
     sensor_filter_node = IncludeLaunchDescription(
@@ -332,6 +349,7 @@ def generate_launch_description():
             lidar_node,
             depth_cam_node,
             rs_tf_node,
+            camera_stream_node,
             sensor_filter_node,
             delay_navigation_nodes,
             display_manager_node,

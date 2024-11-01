@@ -15,6 +15,9 @@ topics:
   /vikings_bot_2/goal_pose:
     type: geometry_msgs/msg/PoseStamped
     reversed: true
+  /vikings_bot_2/cmd_vel:
+    type: geometry_msgs/msg/Twist
+    reversed: true
 
   # Recieved from robot to domain 0
   /tf:

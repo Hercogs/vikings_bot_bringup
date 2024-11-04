@@ -317,6 +317,15 @@ def generate_launch_description():
         arguments = [bridge_config_file],
     )
 
+    joystick_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+                PathJoinSubstitution([
+                    FindPackageShare("vikings_bot_bringup"),
+                    "launch",
+                    "joystick.launch.py"
+                ])]
+        )
+    )
 
     return LaunchDescription(
         [
@@ -339,6 +348,7 @@ def generate_launch_description():
             delay_navigation_nodes,
             display_manager_node,
             bridge_node,
-            rviz_node
+            rviz_node,
+            joystick_node,
         ]
     )

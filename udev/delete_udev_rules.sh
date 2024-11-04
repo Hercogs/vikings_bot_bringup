@@ -2,7 +2,7 @@
 
 echo "deleting rules for joystick"
 echo "sudo rm   /etc/udev/rules.d/99-joystick.rules"
-sudo rm   /etc/udev/rules.d/squad_robotics_pdu.rules
+sudo rm   /etc/udev/rules.d/99-joystick.rules
 echo " "
 echo "Restarting udev"
 echo ""

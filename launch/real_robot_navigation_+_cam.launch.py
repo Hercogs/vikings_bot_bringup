@@ -78,7 +78,7 @@ def generate_launch_description():
     )
     profile_arg = DeclareLaunchArgument(
         name='profile',
-        default_value='640x480x30',
+        default_value='1280x720x30',
         description='Set resolution and FPS for rgb and depth cameras'
     )
     camera_name = PythonExpression(["'",LaunchConfiguration("vikings_bot_name"),"_camera'"])

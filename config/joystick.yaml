@@ -9,7 +9,7 @@
     enable_turbo_button: 4
     inverted_reverse: true
     scale_linear.x: 0.4
-    scale_linear_turbo.x: 1.0
+    scale_linear_turbo.x: 0.78
     scale_angular.yaw: 0.5
     scale_angular_turbo.yaw: 1.0
 

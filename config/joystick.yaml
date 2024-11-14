@@ -1,7 +1,7 @@
 "*/teleop_twist_joy_node":
   ros__parameters:
-    axis_linear: 1
-    axis_angular: 0
+    axis_linear.x: 1
+    axis_angular.yaw: 3
     scale_linear: 0.5
     scale_angular: 1.0
     enable_button: 5
@@ -9,12 +9,14 @@
     enable_turbo_button: 4
     inverted_reverse: true
     scale_linear.x: 0.4
-    scale_linear_turbo.x: 0.78
+    scale_linear_turbo.x: 0.65
     scale_angular.yaw: 0.5
     scale_angular_turbo.yaw: 1.0
 
 
-    # to control robot: hold RT button (marked "6")
-    # left joystick for forwards/backwards
-    # right joystick for angular movement
+    # to control robot:
+    #   hold button 1 on right side for normal speed
+    #   hold button 1 on left side for turbo 
+    #   left joystick for forwards/backwards
+    #   right joystick for angular movement
 
